@@ -1,0 +1,14 @@
+# image:
+#   tag: 11.5.0-debian-9-r66
+
+primary:
+  persistence: 
+    size: 1Gi
+
+auth:
+  username: appuser
+  database: appdb
+  existingSecret: postgresql-creds
+  secretKeys:
+    adminPasswordKey: admin-password
+    userPasswordKey: appuser-password

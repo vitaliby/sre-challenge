@@ -1,0 +1,25 @@
+common:
+  name: front
+  
+  image:
+    name: vitaliby/appname-front
+    tag: 0.1.0
+  
+  serviceAccount:
+    name: front
+  
+  config:
+    mountPath: /mnt/properties
+    data:
+      application.yaml: |-
+        server.port: 8080
+        ################### Kafka ##############################
+        spring:
+          kafka:
+            bootstrap-servers:  kafka.kafka.svc.cluster.local:9092
+        ################### Logging settings ###################
+        logging:
+          level:
+            root: WARN
+            db.demo: INFO
+        management.server.port: 8081

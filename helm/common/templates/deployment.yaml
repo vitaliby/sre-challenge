@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      serviceAccountName: {{ default "default" .Values.serviceAccount.name }}
+      {{- if .Values.config }}{{ if .Values.config.mountPath }} 
+      volumes:
+        - name: properties
+          configMap:
+            name: {{ .Release.Name }}
+      {{- end }}{{ end }}
+      containers:
+      - name: {{ .Values.name }}
+        image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        {{- if .Values.container }}{{ if .Values.container.envVars }} 
+        env:
+        {{- .Values.container.envVars | toYaml | nindent 8 }}
+        {{- end }}{{ end }}
+        ports:
+        - containerPort: {{ default 8080 .Values.service.application.targetPort }}
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: {{ default 8081 .Values.service.management.targetPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 3
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: {{ default 8081 .Values.service.management.targetPort }}
+          initialDelaySeconds: 10
+          periodSeconds: 3
+        resources:
+          requests:
+            memory: {{ .Values.container.resources.requests.memory }}
+            cpu: {{ .Values.container.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.container.resources.limits.memory }}
+            cpu: {{ .Values.container.resources.limits.cpu }}
+        {{- if .Values.config }}{{ if .Values.config.mountPath }} 
+        volumeMounts:
+        - name: properties
+          mountPath: {{ .Values.config.mountPath}}
+          readOnly: true
+        {{- end }}{{ end }}

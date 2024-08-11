@@ -1,0 +1,22 @@
+common:
+  name: back
+  
+  image:
+    name: vitaliby/appname-back
+    tag: 0.1.0
+  
+  serviceAccount:
+    name: back
+  
+  config:
+    mountPath: /mnt/properties
+    data:
+      application.yaml: |-
+        spring:
+          kafka:
+            bootstrap-servers: kafka.kafka.svc.cluster.local:9092
+          datasource.url: jdbc:postgresql://postgresql.postgres.svc.cluster.local:5432/appdb
+          datasource.username: appuser
+          datasource.password: 'khPyBl7lA6Ap4JmzWOpG9S8v'
+        
+        management.server.port: 8081

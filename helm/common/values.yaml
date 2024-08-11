@@ -1,0 +1,45 @@
+name: appname
+
+image:
+  name: repo/appname
+  tag: 0.1.0
+
+serviceAccount:
+  name: appname
+  automountServiceAccountToken: false
+
+service:
+  application:
+    port: 80
+    targetPort: 8080
+  management:
+    port: 8081
+    targetPort: 8081
+
+container:
+  envVars:
+    - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+      value: "/mnt/properties/"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+config:
+  mountPath: /mnt/properties
+  data:
+    application.yaml: |-
+      server.port: 8080
+      ################### Kafka ##############################
+      spring:
+        kafka:
+          bootstrap-servers:  {{ kafka-bootstrap-goes here }}
+      ################### Logging settings ###################
+      logging:
+        level:
+          root: WARN
+          db.demo: INFO
+      management.server.port: 8081
