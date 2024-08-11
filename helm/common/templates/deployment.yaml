@@ -36,14 +36,14 @@ spec:
           httpGet:
             path: /health
             port: {{ default 8081 .Values.service.management.targetPort }}
-          initialDelaySeconds: 10
+          initialDelaySeconds: {{ default 15 .Values.container.healthCheck.initialDelaySeconds }}
           periodSeconds: 3
         readinessProbe:
           failureThreshold: 3
           httpGet:
             path: /health
             port: {{ default 8081 .Values.service.management.targetPort }}
-          initialDelaySeconds: 10
+          initialDelaySeconds: {{ default 15 .Values.container.healthCheck.initialDelaySeconds }}
           periodSeconds: 3
         resources:
           requests:
