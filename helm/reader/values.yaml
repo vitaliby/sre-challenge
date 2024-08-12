@@ -25,6 +25,7 @@ common:
       application.yaml: |-
         spring:
           datasource.url: jdbc:postgresql://postgresql.postgres.svc.cluster.local:5432/appdb
+          # Obviously, in real scenario user and password should be stored in Secrets (Secret Manager)
           datasource.username: appuser
           datasource.password: 'khPyBl7lA6Ap4JmzWOpG9S8v'
         
